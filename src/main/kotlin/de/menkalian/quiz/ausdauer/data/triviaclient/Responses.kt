@@ -1,4 +1,4 @@
-package de.menkalian.quiz.data.triviaclient
+package de.menkalian.quiz.ausdauer.data.triviaclient
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties

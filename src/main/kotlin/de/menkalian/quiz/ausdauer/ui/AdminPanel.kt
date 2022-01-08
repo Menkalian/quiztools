@@ -1,16 +1,13 @@
-package de.menkalian.quiz.ui
+package de.menkalian.quiz.ausdauer.ui
 
 import com.vaadin.flow.component.Text
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.grid.Grid
-import com.vaadin.flow.component.grid.HeaderRow
-import com.vaadin.flow.component.html.Header
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.page.Push
 import com.vaadin.flow.router.Route
-import de.menkalian.quiz.controller.AdminController
-import de.menkalian.quiz.data.Scoretracker
-import de.menkalian.quiz.logger
+import de.menkalian.quiz.ausdauer.controller.AdminController
+import de.menkalian.quiz.ausdauer.data.Scoretracker
 
 @Push
 @Route("admin")

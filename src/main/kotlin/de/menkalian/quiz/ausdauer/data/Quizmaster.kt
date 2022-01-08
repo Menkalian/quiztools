@@ -1,7 +1,8 @@
-package de.menkalian.quiz.data
+package de.menkalian.quiz.ausdauer.data
 
-import de.menkalian.quiz.data.triviaclient.OpenTriviaDbClient
-import de.menkalian.quiz.data.triviaclient.Question
+import de.menkalian.quiz.ausdauer.data.triviaclient.OpenTriviaDbClient
+import de.menkalian.quiz.ausdauer.data.triviaclient.Question
+import de.menkalian.quiz.logger
 import org.springframework.stereotype.Service
 import java.util.concurrent.Executors
 
@@ -11,6 +12,7 @@ class Quizmaster(private final val triviaDbClient: OpenTriviaDbClient) {
     val questions: MutableList<Question> = mutableListOf()
 
     init {
+        logger().info("Initialized Quizmaster")
         triviaDbClient.refreshSession()
         supplyQuestions(30)
     }
@@ -24,9 +26,11 @@ class Quizmaster(private final val triviaDbClient: OpenTriviaDbClient) {
     }
 
     private final fun supplyQuestions(desiredCount: Int) {
+        logger().info("Requesting a refill on questions")
         supplyExecutor.submit {
             val toRequest = (desiredCount - questions.size).coerceAtLeast(10)
             questions.addAll(triviaDbClient.retrieveMultipleChoiceQuestions(toRequest))
+            logger().info("Refilled questions")
         }
     }
 }

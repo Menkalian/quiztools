@@ -1,4 +1,4 @@
-package de.menkalian.quiz.data.triviaclient
+package de.menkalian.quiz.ausdauer.data.triviaclient
 
 import de.menkalian.quiz.logger
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -14,6 +14,7 @@ class OpenTriviaDbClient(restBuilder: RestTemplateBuilder) {
     private var sessionToken: String? = null
 
     fun refreshSession() {
+        logger().info("Refreshing Trivia API Session")
         if (sessionToken == null || !refreshActiveToken()) {
             sessionToken = requestNewToken()
         }
@@ -35,6 +36,7 @@ class OpenTriviaDbClient(restBuilder: RestTemplateBuilder) {
             throw RuntimeException("Token Refresh returned invalid answer")
         }
 
+        logger().debug("Received questions: $response")
         return response.results.map { it.decode() }
     }
 

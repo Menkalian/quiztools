@@ -1,4 +1,4 @@
-package de.menkalian.quiz.ui
+package de.menkalian.quiz.ausdauer.ui
 
 import com.vaadin.flow.component.Text
 import com.vaadin.flow.component.button.Button
@@ -11,7 +11,7 @@ import com.vaadin.flow.router.BeforeEvent
 import com.vaadin.flow.router.HasUrlParameter
 import com.vaadin.flow.router.Route
 import com.vaadin.flow.shared.communication.PushMode
-import de.menkalian.quiz.controller.PlayerController
+import de.menkalian.quiz.ausdauer.controller.PlayerController
 import de.menkalian.quiz.logger
 
 @Push(PushMode.AUTOMATIC)
@@ -23,7 +23,6 @@ class QuestionScreen(val controller: PlayerController) : VerticalLayout(), HasUr
 
     init {
         div.setSizeFull()
-        div.style["padding"] = "auto"
         add(div)
         displayWaiting()
 
@@ -34,7 +33,6 @@ class QuestionScreen(val controller: PlayerController) : VerticalLayout(), HasUr
             controller.onStartedAction = {
                 ui.get().access {
                     displayQuestion()
-                    logger().info("Started executed")
                 }
             }
 
@@ -72,8 +70,7 @@ class QuestionScreen(val controller: PlayerController) : VerticalLayout(), HasUr
 
     fun displayQuestion() {
         div.removeAll()
-        questionText.text = "Question ${controller.questionCount}"
-        logger().info("$name question ${controller.questionCount}")
+        questionText.text = "Question ${controller.questionCount+1}"
         div.add(questionText)
 
         val question = controller.getQuestion()

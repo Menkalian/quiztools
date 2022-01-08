@@ -1,4 +1,4 @@
-package de.menkalian.quiz.data
+package de.menkalian.quiz.ausdauer.data
 
 import de.menkalian.quiz.logger
 import org.springframework.stereotype.Service
@@ -7,10 +7,21 @@ import java.util.concurrent.Executors
 @Service
 class Scoretracker {
     interface ScoreListener {
-        fun onStarted() {}
-        fun onStopped(name: String) {}
-        fun onQuestionCountChanged(name: String, count: Int) {}
-        fun onPointsChanged(name: String, count: Int) {}
+        fun onStarted() {
+            logger().debug("Start Event received")
+        }
+
+        fun onStopped(name: String) {
+            logger().debug("Stopped Event ($name) received")
+        }
+
+        fun onQuestionCountChanged(name: String, count: Int) {
+            logger().debug("Questioncount Event ($name, $count) received")
+        }
+
+        fun onPointsChanged(name: String, count: Int) {
+            logger().debug("Score Event ($name, $count) received")
+        }
     }
 
     private val executors = Executors.newScheduledThreadPool(4)
@@ -44,9 +55,9 @@ class Scoretracker {
         get() = innerPeople
 
     fun addPerson(name: String) {
-        logger().info("Adding $name")
         synchronized(people) {
             if (innerPeople.containsKey(name).not()) {
+                logger().info("Adding $name")
                 innerPeople[name] = Person(name)
                 callListeners { it.onQuestionCountChanged(name, people[name]?.questions ?: 0) }
             }
@@ -56,6 +67,7 @@ class Scoretracker {
     fun score(name: String) {
         synchronized(people) {
             if (people[name]?.running == true) {
+                logger().info("$name scored")
                 people[name]?.let { it.score++ }
                 callListeners { it.onPointsChanged(name, people[name]?.score ?: 0) }
             } else {
@@ -67,6 +79,7 @@ class Scoretracker {
     fun question(name: String) {
         synchronized(people) {
             if (people[name]?.running == true) {
+                logger().info("$name answered a question")
                 people[name]?.let { it.questions++ }
                 callListeners { it.onQuestionCountChanged(name, people[name]?.questions ?: 0) }
             } else {
@@ -77,8 +90,8 @@ class Scoretracker {
 
     fun start() {
         synchronized(people) {
+            logger().info("Starting everyone")
             people.forEach {
-                logger().info("Starting ${it.key}")
                 it.value.running = true
             }
             callListeners { it.onStarted() }
@@ -87,6 +100,7 @@ class Scoretracker {
 
     fun stop(name: String) {
         synchronized(people) {
+            logger().info("Stopping $name")
             people[name]?.let { it.running = false }
             callListeners { it.onStopped(name) }
         }
